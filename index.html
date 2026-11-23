@@ -1303,6 +1303,16 @@
                 const manifestUrl = URL.createObjectURL(manifestBlob);
                 const manifestLink = document.getElementById('dynamicManifestLink');
                 if (manifestLink) manifestLink.href = manifestUrl;
+                                if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then((reg) => {
+                            console.log('Service Worker registered:', reg.scope);
+                        })
+                        .catch((err) => {
+                            console.warn('Service Worker registration failed:', err);
+                        });
+                }
+
             } catch (err) {
                 console.warn('PWA manifest setup skipped:', err);
             }
