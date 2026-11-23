@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Web App Manifest & iOS Safari Capabilities -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dr. Amal Clinic">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a8491">
+    <meta name="format-detection" content="telephone=no">
+    <link id="dynamicManifestLink" rel="manifest" href="">
+    <link id="dynamicAppleIcon" rel="apple-touch-icon" href="">
+    <title>Dr. Amal Magdy Clinic - Internal Medicine EMR (iOS)</title>
+    
+    <style>
+        /* Apple iOS Design Tokens & System Standards */
+        :root {
+            --ios-blue: #007aff;
+            --ios-teal: #0a8491;
+            --ios-teal-dark: #065e67;
+            --ios-teal-light: #e6f7f9;
+            --ios-green: #34c759;
+            --ios-orange: #ff9500;
+            --ios-red: #ff3b30;
+            --ios-purple: #af52de;
+            --ios-bg: #f2f2f7;
+            --ios-card: #ffffff;
+            --ios-card-border: rgba(60, 60, 67, 0.12);
+            --ios-text-primary: #1c1c1e;
+            --ios-text-secondary: #6c6c70;
+            --ios-text-tertiary: #8e8e93;
+            --radius-ios-sm: 10px;
+            --radius-ios-md: 14px;
+            --radius-ios-lg: 20px;
+            --shadow-ios-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-ios-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-ios-lg: 0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--ios-bg);
+            color: var(--ios-text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(75px + env(safe-area-inset-bottom));
+            -webkit-font-smoothing: antialiased;
+        }
+
+        @media (min-width: 850px) {
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* SVG Helper Icons */
+        .icon {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            vertical-align: middle;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+        .icon-lg { width: 1.6rem; height: 1.6rem; }
+        .icon-sm { width: 1rem; height: 1rem; }
+
+        /* Safari Home Screen Instruction Banner */
+        .ios-install-banner {
+            background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+            color: #ffffff;
+            padding: 0.6rem 1rem;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-ios-sm);
+        }
+
+        .ios-install-banner .install-btn {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            padding: 0.35rem 0.75rem;
+            border-radius: 14px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .file-protocol-alert {
+            background: #fff8e6;
+            border: 1px solid #ffd573;
+            color: #664300;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-ios-md);
+            font-size: 0.78rem;
+            line-height: 1.45;
+            margin-bottom: 0.85rem;
+            display: none;
+        }
+
+        /* Header Bar */
+        header {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--ios-card-border);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .clinic-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-avatar {
+            width: 2.6rem;
+            height: 2.6rem;
+            background: linear-gradient(135deg, var(--ios-teal), var(--ios-teal-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(10, 132, 145, 0.3);
+        }
+
+        .brand-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--ios-text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--ios-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phone-chip {
+            background: var(--ios-teal-light);
+            color: var(--ios-teal-dark);
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        /* Desktop Navigation Links */
+        .desktop-tabs {
+            display: none;
+            gap: 0.4rem;
+        }
+
+        @media (min-width: 850px) {
+            .desktop-tabs { display: flex; }
+        }
+
+        .tab-link {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 0.85rem;
+            border-radius: var(--radius-ios-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ios-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+
+        .tab-link:hover {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--ios-text-primary);
+        }
+
+        .tab-link.active {
+            background: var(--ios-teal);
+            color: #ffffff;
+        }
+
+        .btn-ios-add {
+            background: var(--ios-blue);
+            color: #ffffff;
+            border: none;
+            padding: 0.55rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            box-shadow: var(--shadow-ios-sm);
+        }
+
+        /* iOS Bottom Navigation Bar for Mobile */
+        .ios-tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-top: 1px solid var(--ios-card-border);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0.4rem 0 calc(0.6rem + env(safe-area-inset-bottom)) 0;
+            z-index: 40;
+        }
+
+        @media (min-width: 850px) {
+            .ios-tab-bar { display: none; }
+        }
+
+        .tab-item {
+            background: transparent;
+            border: none;
+            color: var(--ios-text-tertiary);
+            font-size: 0.68rem;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            cursor: pointer;
+        }
+
+        .tab-item.active {
+            color: var(--ios-teal);
+        }
+
+        /* Container Layout */
+        main {
+            flex: 1;
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .tab-view { display: block; }
+        .tab-view.hidden { display: none !important; }
+
+        /* iOS Grouped Cards */
+        .ios-card {
+            background: var(--ios-card);
+            border-radius: var(--radius-ios-lg);
+            border: 1px solid var(--ios-card-border);
+            box-shadow: var(--shadow-ios-sm);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .ios-card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ios-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--ios-text-primary);
+        }
+
+        .ios-subtitle {
+            font-size: 0.78rem;
+            color: var(--ios-text-secondary);
+            margin-top: 0.15rem;
+        }
+
+        /* Stats Bar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 650px) {
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .stat-card {
+            background: var(--ios-card);
+            padding: 1rem;
+            border-radius: var(--radius-ios-md);
+            border: 1px solid var(--ios-card-border);
+            box-shadow: var(--shadow-ios-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-val { font-size: 1.5rem; font-weight: 900; color: var(--ios-text-primary); }
+        .stat-lbl { font-size: 0.75rem; font-weight: 700; color: var(--ios-text-secondary); }
+
+        .stat-icon-wrap {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius-ios-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* iOS Form Elements */
+        label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--ios-text-secondary);
+            margin-bottom: 0.3rem;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input[type="text"], input[type="number"], input[type="tel"], select, textarea {
+            width: 100%;
+            padding: 0.7rem 0.85rem;
+            border: 1px solid var(--ios-card-border);
+            background: #fafafa;
+            border-radius: var(--radius-ios-sm);
+            font-size: 0.9rem;
+            color: var(--ios-text-primary);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background: #ffffff;
+            border-color: var(--ios-teal);
+            box-shadow: 0 0 0 3px rgba(10, 132, 145, 0.15);
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+        .grid-5 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+
+        @media (min-width: 650px) {
+            .grid-2 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(3, 1fr); }
+            .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        }
+
+        /* Buttons */
+        .btn {
+            min-height: 44px; /* Minimum Apple Touch Target Size */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.1rem;
+            border-radius: var(--radius-ios-sm);
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-teal { background: var(--ios-teal); color: white; }
+        .btn-teal:hover { background: var(--ios-teal-dark); }
+        .btn-secondary { background: #e5e5ea; color: var(--ios-text-primary); }
+        .btn-green { background: var(--ios-green); color: white; }
+        .btn-red { background: var(--ios-red); color: white; }
+        .btn-orange { background: var(--ios-orange); color: white; }
+
+        /* Tables & List Items */
+        .table-wrap { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+        th { background: #fafafa; padding: 0.75rem 1rem; color: var(--ios-text-secondary); font-weight: 800; border-bottom: 1px solid var(--ios-card-border); }
+        td { padding: 0.85rem 1rem; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+        tr:hover td { background: rgba(0, 0, 0, 0.015); }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .chip-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid var(--ios-card-border);
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .chip-btn.active {
+            background: var(--ios-teal);
+            color: #ffffff;
+            border-color: var(--ios-teal);
+        }
+
+        /* Modals & iOS Action Sheets */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.hidden { display: none !important; }
+
+        .ios-sheet {
+            background: #ffffff;
+            border-radius: var(--radius-ios-lg);
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow-ios-lg);
+            animation: sheetUp 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+
+        .ios-sheet.sheet-lg { max-width: 900px; }
+
+        @keyframes sheetUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .sheet-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--ios-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9f9fb;
+        }
+
+        .sheet-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .sheet-footer {
+            padding: 0.85rem 1.25rem;
+            background: #f9f9fb;
+            border-top: 1px solid var(--ios-card-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        /* Toasts Stack */
+        #toastStack {
+            position: fixed;
+            top: 4.5rem;
+            right: 1.25rem;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .ios-toast {
+            background: rgba(28, 28, 30, 0.94);
+            color: white;
+            padding: 0.75rem 1.1rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-ios-md);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Printable Paper Styles */
+        .paper-a5 {
+            width: 100%;
+            max-width: 148mm;
+            min-height: 210mm;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 12mm;
+            box-shadow: var(--shadow-ios-lg);
+            border-radius: var(--radius-ios-md);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #000;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #printExecutionArea, #printExecutionArea * { visibility: visible; }
+            #printExecutionArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white !important;
+                color: black !important;
+                padding: 10mm;
+            }
+            .no-print { display: none !important; }
+            @page { size: auto; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- iOS Home Screen Instruction Ribbon -->
+    <div class="ios-install-banner no-print" id="installGuideBanner">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/></svg>
+            <span>Add to iPhone Home Screen for offline App mode</span>
+        </div>
+        <button onclick="openInstallInstructions()" class="install-btn">How to Add</button>
+    </div>
+
+    <!-- Navigation Header Bar -->
+    <header class="no-print">
+        <div class="header-inner">
+            <div class="clinic-brand">
+                <div class="brand-avatar">
+                    <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                </div>
+                <div>
+                    <h1 class="brand-title" id="headDocName">Dr. Amal Magdy Clinic</h1>
+                    <div class="brand-sub">
+                        <span id="headDocSub">Internal Medicine & Diabetes Specialist</span>
+                        <span class="phone-chip">01064777914</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="desktop-tabs">
+                <button onclick="switchTab('patients')" id="dTab-patients" class="tab-link active">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <span>Patients</span>
+                </button>
+                <button onclick="switchTab('drugs')" id="dTab-drugs" class="tab-link">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-15z"/></svg>
+                    <span>Formulary</span>
+                </button>
+                <button onclick="switchTab('settings')" id="dTab-settings" class="tab-link">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <span>Backup & Settings</span>
+                </button>
+                <button onclick="openPatientModal()" class="btn-ios-add">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    <span>New Patient</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile iOS Bottom Navigation Bar -->
+    <nav class="ios-tab-bar no-print">
+        <button onclick="switchTab('patients')" id="mTab-patients" class="tab-item active">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>Patients</span>
+        </button>
+        <button onclick="switchTab('drugs')" id="mTab-drugs" class="tab-item">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-15z"/></svg>
+            <span>Formulary</span>
+        </button>
+        <button onclick="switchTab('settings')" id="mTab-settings" class="tab-item">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            <span>Settings</span>
+        </button>
+        <button onclick="openPatientModal()" class="tab-item" style="color: var(--ios-blue);">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Add Patient</span>
+        </button>
+    </nav>
+
+    <!-- Main Content Workspace -->
+    <main class="no-print">
+        
+        <div id="toastStack"></div>
+
+        <div id="localFileWarningBox" class="file-protocol-alert">
+            <strong>Safari Local File Notice:</strong> You opened this page directly as a local file (<code>file://</code>). Apple Safari often restricts <em>Add to Home Screen</em> or standalone app mode on local files. For full iOS App installation &amp; smooth Safari behavior, host this HTML file over <code>http://</code> or <code>https://</code> (or open it via a local server / web host).
+        </div>
+
+        <!-- TAB 1: PATIENTS DASHBOARD -->
+        <section id="view-patients" class="tab-view">
+            
+            <div style="margin-bottom: 1rem;">
+                <input type="text" id="patientSearchInput" onkeyup="renderPatientsList()" placeholder="Search patient by name or phone..." style="background: white; padding: 0.8rem 1rem; border-radius: var(--radius-ios-md);">
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-lbl">Total Patients</div>
+                        <div class="stat-val" id="stTotalPatients">0</div>
+                    </div>
+                    <div class="stat-icon-wrap" style="background: var(--ios-teal-light); color: var(--ios-teal-dark);">
+                        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-lbl">Today's Visits</div>
+                        <div class="stat-val" id="stTodayVisits" style="color: var(--ios-green);">0</div>
+                    </div>
+                    <div class="stat-icon-wrap" style="background: #e6f4ea; color: var(--ios-green);">
+                        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-lbl">Prescriptions Issued</div>
+                        <div class="stat-val" id="stTotalRx" style="color: var(--ios-blue);">0</div>
+                    </div>
+                    <div class="stat-icon-wrap" style="background: #e8f0fe; color: var(--ios-blue);">
+                        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-lbl">Internal Med Drugs</div>
+                        <div class="stat-val" id="stTotalDrugs" style="color: var(--ios-purple);">0</div>
+                    </div>
+                    <div class="stat-icon-wrap" style="background: #f3e8ff; color: var(--ios-purple);">
+                        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-15z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Table Card -->
+            <div class="ios-card">
+                <div class="ios-card-header">
+                    <div>
+                        <h2 class="ios-title">Patient Directory & Clinical History</h2>
+                        <p class="ios-subtitle">Select a patient to start examination, view medical profile, or print Rx</p>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Patient Name</th>
+                                <th>Age / Gender</th>
+                                <th>Phone Number</th>
+                                <th>Chronic History</th>
+                                <th>Last Visit</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="emptyPatientsMsg" style="padding: 3rem; text-align: center; color: var(--ios-text-tertiary); display: none;">
+                    <p style="font-weight: 700; font-size: 0.95rem;">No matching patients found</p>
+                    <p style="font-size: 0.8rem; margin-top: 0.25rem;">Tap "New Patient" above to register a profile.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PATIENT CLINICAL PROFILE -->
+        <section id="view-patient-profile" class="tab-view hidden">
+            
+            <!-- Patient Banner Card -->
+            <div class="ios-card" style="padding: 1.25rem;">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.85rem;">
+                        <button onclick="switchTab('patients')" class="btn btn-secondary" style="padding: 0.5rem 0.75rem;">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                        </button>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <h2 id="pfName" style="font-size: 1.3rem; font-weight: 800; color: var(--ios-text-primary);">--</h2>
+                                <span id="pfGenderBadge" class="badge" style="background: #e8f0fe; color: var(--ios-blue);">Male</span>
+                                <span id="pfBloodBadge" class="badge" style="background: #ffebe9; color: var(--ios-red);">O+</span>
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--ios-text-secondary); margin-top: 0.25rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                                <span>Age: <strong id="pfAge">--</strong> yrs</span>
+                                <span>Phone: <strong id="pfPhone" dir="ltr">--</strong></span>
+                                <span>ID: <strong id="pfCode">--</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="openEditPatientModal()" class="btn btn-secondary">Edit Profile</button>
+                        <button onclick="startNewVisitForm()" class="btn btn-teal">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                            <span>Start Visit & Rx</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                
+                <!-- Medical History Column -->
+                <div class="ios-card" style="padding: 1rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.6rem; margin-bottom: 0.75rem;">
+                        <h3 style="font-size: 0.92rem; font-weight: 700; color: var(--ios-text-primary);">Medical History</h3>
+                        <button onclick="toggleHistoryEdit()" id="btnEditHist" style="background: none; border: none; color: var(--ios-teal); font-weight: 700; font-size: 0.8rem; cursor: pointer;">Edit</button>
+                    </div>
+
+                    <!-- View Mode -->
+                    <div id="histViewMode" style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.8rem;">
+                        <div>
+                            <span style="color: var(--ios-text-secondary); font-weight: 700; display: block; margin-bottom: 0.3rem;">Chronic Conditions:</span>
+                            <div id="pfChronicChips" style="display: flex; flex-wrap: wrap; gap: 0.3rem;"></div>
+                        </div>
+                        <div>
+                            <span style="color: var(--ios-text-secondary); font-weight: 700; display: block; margin-bottom: 0.3rem;">Known Allergies:</span>
+                            <p id="pfAllergies" style="background: #ffebe9; color: var(--ios-red); padding: 0.5rem 0.75rem; border-radius: var(--radius-ios-sm); font-weight: 700;">None</p>
+                        </div>
+                        <div>
+                            <span style="color: var(--ios-text-secondary); font-weight: 700; display: block; margin-bottom: 0.3rem;">Surgeries & Family History:</span>
+                            <p id="pfSurgeries" style="background: var(--ios-bg); padding: 0.5rem 0.75rem; border-radius: var(--radius-ios-sm);">None</p>
+                        </div>
+                        <div>
+                            <span style="color: var(--ios-text-secondary); font-weight: 700; display: block; margin-bottom: 0.3rem;">Permanent Clinical Notes:</span>
+                            <p id="pfNotes" style="background: #fff8e6; color: #8a5300; padding: 0.5rem 0.75rem; border-radius: var(--radius-ios-sm);">None</p>
+                        </div>
+                    </div>
+
+                    <!-- History Edit Mode -->
+                    <div id="histEditMode" class="hidden" style="display: flex; flex-direction: column; gap: 0.6rem;">
+                        <label>Chronic Diseases (Internal Med):</label>
+                        <div style="background: var(--ios-bg); padding: 0.6rem; border-radius: var(--radius-ios-sm); border: 1px solid var(--ios-card-border); display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; font-size: 0.78rem;">
+                            <label style="text-transform: none;"><input type="checkbox" value="Diabetes Mellitus" class="disease-cb"> Diabetes</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="Hypertension" class="disease-cb"> Hypertension</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="Ischemic Heart Disease" class="disease-cb"> Cardiac</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="Renal Impairment" class="disease-cb"> Renal</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="Hepatic Disease" class="disease-cb"> Hepatic</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="Bronchial Asthma" class="disease-cb"> Asthma</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="Hypothyroidism" class="disease-cb"> Thyroid</label>
+                            <label style="text-transform: none;"><input type="checkbox" value="IBS / Gastritis" class="disease-cb"> IBS / Stomach</label>
+                        </div>
+
+                        <label>Drug Allergies:</label>
+                        <input type="text" id="inAllergies" placeholder="e.g. Penicillin, NSAIDs...">
+
+                        <label>Surgeries & Family History:</label>
+                        <textarea id="inSurgeries" rows="2" placeholder="e.g. Cholecystectomy 2021..."></textarea>
+
+                        <label>Permanent Clinical Notes:</label>
+                        <textarea id="inNotes" rows="2" placeholder="Special patient instructions..."></textarea>
+
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <button onclick="saveMedicalHistory()" class="btn btn-teal" style="width: 100%;">Save History</button>
+                            <button onclick="toggleHistoryEdit()" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consultation & Prescription Column -->
+                <div style="grid-column: span 2;">
+                    
+                    <!-- New Visit Workspace Card -->
+                    <div id="newVisitFormCard" class="ios-card hidden" style="padding: 1.25rem; border: 2px solid var(--ios-teal);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.6rem; margin-bottom: 1rem;">
+                            <h3 style="font-size: 1rem; font-weight: 800; color: var(--ios-teal-dark);">New Visit Consultation & E-Prescription</h3>
+                            <span id="visitFormDate" style="font-size: 0.75rem; background: var(--ios-teal-light); color: var(--ios-teal-dark); padding: 0.25rem 0.65rem; border-radius: 20px; font-weight: 700;">Date: --</span>
+                        </div>
+
+                        <!-- Vitals Grid -->
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: var(--ios-teal-dark); margin-bottom: 0.4rem;">Vitals & Physical Findings:</label>
+                            <div class="grid-5">
+                                <div><label>Blood Pressure</label><input type="text" id="vBP" placeholder="120/80"></div>
+                                <div><label>Pulse Rate</label><input type="text" id="vPulse" placeholder="75 bpm"></div>
+                                <div><label>Blood Glucose</label><input type="text" id="vSugar" placeholder="110 mg/dL"></div>
+                                <div><label>Temperature</label><input type="text" id="vTemp" placeholder="37.0 °C"></div>
+                                <div><label>Body Weight</label><input type="text" id="vWeight" placeholder="70 kg"></div>
+                            </div>
+                        </div>
+
+                        <!-- Complaint & Diagnosis -->
+                        <div class="grid-2" style="margin-bottom: 1rem;">
+                            <div><label>Chief Complaint:</label><textarea id="vComplaint" rows="2" placeholder="Epigastric pain, headache..."></textarea></div>
+                            <div><label>Diagnosis & Assessment:</label><textarea id="vDiagnosis" rows="2" placeholder="Type 2 Diabetes, H. Pylori Gastritis..."></textarea></div>
+                        </div>
+
+                        <!-- Quick Lab Chips -->
+                        <div style="margin-bottom: 1rem;">
+                            <label>Required Investigations (Tap to add):</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem;">
+                                <button type="button" onclick="toggleQuickLab('CBC')" class="chip-btn">CBC</button>
+                                <button type="button" onclick="toggleQuickLab('HbA1c')" class="chip-btn">HbA1c</button>
+                                <button type="button" onclick="toggleQuickLab('Lipid Profile')" class="chip-btn">Lipid Profile</button>
+                                <button type="button" onclick="toggleQuickLab('LFT')" class="chip-btn">LFT (Liver)</button>
+                                <button type="button" onclick="toggleQuickLab('KFT')" class="chip-btn">KFT (Kidney)</button>
+                                <button type="button" onclick="toggleQuickLab('TSH')" class="chip-btn">TSH</button>
+                                <button type="button" onclick="toggleQuickLab('Abdominal Ultrasound')" class="chip-btn">Abdominal US</button>
+                                <button type="button" onclick="toggleQuickLab('ECG')" class="chip-btn">ECG</button>
+                            </div>
+                            <input type="text" id="vLabs" placeholder="Selected lab work or imaging...">
+                        </div>
+
+                        <!-- Rx Prescription Builder -->
+                        <div style="border-top: 1px solid var(--ios-card-border); padding-top: 1rem; margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--ios-teal-dark);">Prescription Medications (Rx)</h4>
+                                <button type="button" onclick="openQuickPickModal()" class="btn btn-orange" style="font-size: 0.78rem; padding: 0.4rem 0.85rem;">
+                                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-15z"/></svg>
+                                    <span>Formulary Quick-Pick</span>
+                                </button>
+                            </div>
+
+                            <!-- Manual Add Drug Subform -->
+                            <div style="background: var(--ios-bg); padding: 0.85rem; border-radius: var(--radius-ios-md); border: 1px solid var(--ios-card-border); margin-bottom: 0.85rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                                <div class="grid-3">
+                                    <input type="text" id="inRxDrugName" placeholder="Drug Name (or Pick from catalog)">
+                                    <select id="inRxDrugForm">
+                                        <option value="Tablets">Tablets</option>
+                                        <option value="Capsules">Capsules</option>
+                                        <option value="Syrup">Syrup</option>
+                                        <option value="Injection">Injection</option>
+                                        <option value="Sachet">Sachet</option>
+                                        <option value="Inhaler">Inhaler</option>
+                                        <option value="Cream">Cream</option>
+                                    </select>
+                                    <input type="text" id="inRxDrugDose" placeholder="Dose (e.g., 1 tab twice daily)">
+                                </div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="text" id="inRxDrugInstruction" placeholder="Instruction (e.g., Before meals by 30 mins)">
+                                    <button type="button" onclick="addDrugToRx()" class="btn btn-teal" style="white-space: nowrap;">Add Medication</button>
+                                </div>
+                            </div>
+
+                            <!-- Rx Table -->
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Medication & Dosage Form</th>
+                                            <th>Dose Schedule</th>
+                                            <th>Instructions</th>
+                                            <th style="text-align: center;">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="currentRxTBody">
+                                        <tr><td colspan="4" style="text-align: center; color: var(--ios-text-tertiary);">No medications added yet. Tap Quick-Pick or enter manually.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Special Advice & Follow-Up -->
+                        <div class="grid-2" style="margin-bottom: 1.25rem;">
+                            <div><label>Lifestyle Advice & Diet:</label><input type="text" id="vAdvice" placeholder="e.g. Low salt diet, increase hydration..."></div>
+                            <div><label>Follow-Up Appointment:</label><input type="text" id="vFollowUp" placeholder="e.g. In 2 weeks with lab results..."></div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; border-top: 1px solid var(--ios-card-border); padding-top: 0.85rem;">
+                            <button onclick="closeNewVisitForm()" class="btn btn-secondary">Cancel</button>
+                            <button onclick="saveAndPreviewVisit()" class="btn btn-teal" style="background: var(--ios-teal-dark);">Save & Print Prescription</button>
+                        </div>
+                    </div>
+
+                    <!-- Past Visits List -->
+                    <div class="ios-card" style="padding: 1rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.6rem; margin-bottom: 0.75rem;">
+                            <h3 style="font-size: 0.92rem; font-weight: 700; color: var(--ios-text-primary);">Past Visits & Prescriptions History</h3>
+                            <span id="visitCountBadge" class="badge" style="background: var(--ios-bg); color: var(--ios-text-secondary);">0 Visits</span>
+                        </div>
+                        <div id="pastVisitsContainer" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: FORMULARY DATABASE -->
+        <section id="view-drugs" class="tab-view hidden">
+            <div class="ios-card" style="padding: 1.25rem;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.75rem; margin-bottom: 1rem; gap: 0.5rem;">
+                    <div>
+                        <h2 class="ios-title">Internal Medicine Drug Formulary</h2>
+                        <p class="ios-subtitle">Categorized medication database for rapid e-prescription building</p>
+                    </div>
+                    <button onclick="openAddDrugModal()" class="btn btn-teal">Add New Drug</button>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="drugManageSearch" onkeyup="renderDrugsTable()" placeholder="Search drugs by name or category..." style="max-width: 400px; margin-bottom: 0.5rem;">
+                    <div id="drugManageCategoryChips" style="display: flex; flex-wrap: wrap; gap: 0.3rem;"></div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Drug Name</th>
+                                <th>Category</th>
+                                <th>Dosage Form</th>
+                                <th>Default Dose</th>
+                                <th>Instructions</th>
+                                <th style="text-align: center;">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="drugsTBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: BACKUP & SETTINGS -->
+        <section id="view-settings" class="tab-view hidden">
+            <div class="grid-2">
+                
+                <div class="ios-card" style="padding: 1.25rem;">
+                    <h3 class="ios-title" style="border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">Clinic Profile & Doctor Header</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                        <div><label>Doctor Name & Clinic Title:</label><input type="text" id="setDocName" value="Dr. Amal Magdy Clinic"></div>
+                        <div><label>Specialty & Subtitle:</label><input type="text" id="setDocSub" value="Internal Medicine & Diabetes Specialist"></div>
+                        <div><label>Clinic Phone Number (WhatsApp Enabled):</label><input type="text" id="setPhones" value="01064777914" dir="ltr"></div>
+                        <div><label>Clinic Address & Working Hours:</label><input type="text" id="setAddress" value="Tanta, Gharbia Governorate | Daily 4:00 PM - 9:00 PM"></div>
+                        <button onclick="saveSettingsForm()" class="btn btn-teal" style="margin-top: 0.5rem;">Save Settings</button>
+                    </div>
+                </div>
+
+                <div class="ios-card" style="padding: 1.25rem;">
+                    <h3 class="ios-title" style="border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">Data Backup & Offline Storage</h3>
+                    <p style="font-size: 0.8rem; color: var(--ios-text-secondary); margin-bottom: 1.25rem; line-height: 1.4;">All clinical data is securely persisted locally inside your browser's LocalStorage on this device. Export periodic JSON backups to safeguard patient records.</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <button onclick="exportDataBackup()" class="btn btn-teal" style="background: #1c1c1e;">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            <span>Export Data Backup (JSON)</span>
+                        </button>
+                        <label class="btn btn-secondary" style="text-align: center; cursor: pointer;">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+                            <span>Import Data Backup (JSON)</span>
+                            <input type="file" id="importFileInput" onchange="importDataBackup(event)" style="display: none;" accept=".json">
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALS & ACTION SHEETS -->
+
+    <!-- Modal: iOS Home Screen Instructions -->
+    <div id="installInstructionsModal" class="modal-overlay hidden no-print">
+        <div class="ios-sheet">
+            <div class="sheet-header">
+                <h3 style="font-weight: 800; font-size: 1rem;">Add to iPhone Home Screen</h3>
+                <button onclick="closeInstallInstructions()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+            </div>
+            <div class="sheet-body" style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.85rem; line-height: 1.5;">
+                <p>Follow these quick steps in <strong>Safari</strong> on your iPhone to install this web app onto your home screen:</p>
+                <div style="background: var(--ios-bg); padding: 0.75rem; border-radius: var(--radius-ios-sm); border: 1px solid var(--ios-card-border);">
+                    <p style="font-weight: 800; margin-bottom: 0.2rem;">Step 1: Open Share Sheet</p>
+                    <p style="color: var(--ios-text-secondary); font-size: 0.8rem;">Tap the <strong>Share button</strong> at the bottom of Safari (the square with an upward arrow).</p>
+                </div>
+                <div style="background: var(--ios-bg); padding: 0.75rem; border-radius: var(--radius-ios-sm); border: 1px solid var(--ios-card-border);">
+                    <p style="font-weight: 800; margin-bottom: 0.2rem;">Step 2: Add to Home Screen</p>
+                    <p style="color: var(--ios-text-secondary); font-size: 0.8rem;">Scroll down the menu options and tap <strong>"Add to Home Screen"</strong>.</p>
+                </div>
+                <div style="background: var(--ios-bg); padding: 0.75rem; border-radius: var(--radius-ios-sm); border: 1px solid var(--ios-card-border);">
+                    <p style="font-weight: 800; margin-bottom: 0.2rem;">Step 3: Confirm Title</p>
+                    <p style="color: var(--ios-text-secondary); font-size: 0.8rem;">Tap <strong>"Add"</strong> in the top-right corner. A dedicated icon will appear on your iPhone!</p>
+                </div>
+            </div>
+            <div class="sheet-footer">
+                <button onclick="closeInstallInstructions()" class="btn btn-teal">Got It</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 1: Register / Edit Patient -->
+    <div id="patientModal" class="modal-overlay hidden no-print">
+        <div class="ios-sheet">
+            <div class="sheet-header">
+                <h3 id="patientModalTitle" style="font-weight: 800; font-size: 1rem;">Register New Patient</h3>
+                <button onclick="closePatientModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-text-tertiary);">✕</button>
+            </div>
+            <form onsubmit="handlePatientFormSubmit(event)">
+                <div class="sheet-body" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                    <input type="hidden" id="mPatId">
+                    <div><label>Full Patient Name *</label><input type="text" id="mPatName" required placeholder="e.g. Ahmed Mahmoud"></div>
+                    <div class="grid-2">
+                        <div><label>Age (Years) *</label><input type="number" id="mPatAge" required min="1" max="120" placeholder="e.g. 45"></div>
+                        <div>
+                            <label>Gender *</label>
+                            <select id="mPatGender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div><label>Phone Number *</label><input type="tel" id="mPatPhone" placeholder="01064777914" required dir="ltr"></div>
+                        <div>
+                            <label>Blood Group</label>
+                            <select id="mPatBlood">
+                                <option value="O+">O+</option><option value="A+">A+</option><option value="B+">B+</option>
+                                <option value="AB+">AB+</option><option value="O-">O-</option><option value="A-">A-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div><label>Initial Clinical Note</label><input type="text" id="mPatNote" placeholder="First visit referral notes..."></div>
+                </div>
+                <div class="sheet-footer">
+                    <button type="button" onclick="closePatientModal()" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-teal">Save Patient Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Quick Pick Formulary Sheet -->
+    <div id="quickPickModal" class="modal-overlay hidden no-print">
+        <div class="ios-sheet sheet-lg">
+            <div class="sheet-header">
+                <h3 style="font-weight: 800; font-size: 1rem;">Internal Medicine Quick-Pick Formulary</h3>
+                <button onclick="closeQuickPickModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-text-tertiary);">✕</button>
+            </div>
+            <div style="padding: 0.75rem 1.25rem; background: var(--ios-bg); border-bottom: 1px solid var(--ios-card-border);">
+                <input type="text" id="qpSearch" onkeyup="renderQuickPickGrid()" placeholder="Search drug by name..." style="margin-bottom: 0.5rem;">
+                <div id="qpCategoryChips" style="display: flex; flex-wrap: wrap; gap: 0.3rem;"></div>
+            </div>
+            <div class="sheet-body">
+                <div id="qpDrugsGrid" class="grid-3"></div>
+            </div>
+            <div class="sheet-footer">
+                <span id="qpCountLbl" style="font-size: 0.75rem; color: var(--ios-text-secondary); margin-right: auto; align-self: center;"></span>
+                <button onclick="closeQuickPickModal()" class="btn btn-teal">Done & Return</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Add Drug to Formulary -->
+    <div id="addDrugModal" class="modal-overlay hidden no-print">
+        <div class="ios-sheet">
+            <div class="sheet-header">
+                <h3 style="font-weight: 800; font-size: 1rem;">Add Drug to Clinic Formulary</h3>
+                <button onclick="closeAddDrugModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-text-tertiary);">✕</button>
+            </div>
+            <form onsubmit="handleAddDrugSubmit(event)">
+                <div class="sheet-body" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                    <div><label>Medication Name *</label><input type="text" id="mDrugName" required placeholder="e.g. Janumet 50/1000 mg"></div>
+                    <div>
+                        <label>Category</label>
+                        <select id="mDrugCategory">
+                            <option value="GI & Colon">GI & Colon</option>
+                            <option value="Cardiology & BP">Cardiology & BP</option>
+                            <option value="Diabetes & Endocrine">Diabetes & Endocrine</option>
+                            <option value="Respiratory">Respiratory</option>
+                            <option value="Renal & Uric Acid">Renal & Uric Acid</option>
+                            <option value="Vitamins & Hematology">Vitamins & Hematology</option>
+                            <option value="Analgesics & Antibiotics">Analgesics & Antibiotics</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Dosage Form</label>
+                        <select id="mDrugForm">
+                            <option value="Tablets">Tablets</option>
+                            <option value="Capsules">Capsules</option>
+                            <option value="Syrup">Syrup</option>
+                            <option value="Injection">Injection</option>
+                            <option value="Sachet">Sachet</option>
+                        </select>
+                    </div>
+                    <div><label>Default Dosage</label><input type="text" id="mDrugDose" placeholder="e.g. 1 tablet twice daily"></div>
+                    <div><label>Default Instruction</label><input type="text" id="mDrugInst" placeholder="e.g. Before meals by 30 mins"></div>
+                </div>
+                <div class="sheet-footer">
+                    <button type="button" onclick="closeAddDrugModal()" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-teal">Save to Formulary</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: WhatsApp Launch Confirmation -->
+    <div id="waModal" class="modal-overlay hidden no-print">
+        <div class="ios-sheet">
+            <div class="sheet-header" style="background: #e6f4ea;">
+                <h3 style="color: var(--ios-green); font-weight: 800; font-size: 1rem;">Share Prescription via WhatsApp</h3>
+                <button onclick="closeWaModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--ios-text-tertiary);">✕</button>
+            </div>
+            <div class="sheet-body" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <div><label>Patient WhatsApp Number:</label><input type="tel" id="waPhoneInput" dir="ltr" style="font-weight: 700;"></div>
+                <div><label>Message Preview:</label><textarea id="waPreviewText" rows="9" readonly style="font-size: 0.78rem; font-family: monospace; background: var(--ios-bg);"></textarea></div>
+            </div>
+            <div class="sheet-footer">
+                <button onclick="closeWaModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="launchWhatsAppNow()" class="btn btn-green">Launch WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRINT PREVIEW SHEET -->
+    <div id="printPreviewModal" class="modal-overlay hidden no-print" style="overflow-y: auto;">
+        <div style="width: 100%; max-width: 750px; margin: auto; padding: 1rem;">
+            <div style="background: #1c1c1e; padding: 0.85rem 1.25rem; border-radius: var(--radius-ios-md); color: white; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                <span style="font-weight: 800; color: var(--ios-orange);">E-Prescription Print Preview</span>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="shareWhatsAppFromPrint()" class="btn btn-green" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">WhatsApp</button>
+                    <button onclick="executePrint()" class="btn btn-orange" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">Print Rx</button>
+                    <button onclick="closePrintPreview()" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">Close</button>
+                </div>
+            </div>
+
+            <div id="prescriptionPaper" class="paper-a5">
+                <div>
+                    <!-- Prescription Header -->
+                    <div style="border-bottom: 2px solid var(--ios-teal); padding-bottom: 0.6rem; margin-bottom: 0.6rem; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h2 id="prDocName" style="font-size: 1.15rem; font-weight: 800; color: var(--ios-teal-dark);">Dr. Amal Magdy Clinic</h2>
+                            <p id="prDocSub" style="font-size: 0.78rem; font-weight: 700; color: var(--ios-teal);">Internal Medicine & Diabetes Specialist</p>
+                        </div>
+                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--ios-text-secondary);">Date: <strong id="prDate">--</strong></div>
+                    </div>
+
+                    <!-- Patient Info Bar -->
+                    <div style="background: var(--ios-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.6rem; display: flex; justify-content: space-between;">
+                        <span>Patient: <strong id="prPatName">--</strong></span>
+                        <span>Age: <strong id="prPatAge">--</strong> yrs</span>
+                        <span>Gender: <strong id="prPatGender">--</strong></span>
+                    </div>
+
+                    <!-- Vitals Summary Bar -->
+                    <div id="prVitalsRow" style="background: #e6f7f9; border: 1px solid #b2ebf2; padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.72rem; display: flex; justify-content: space-around; font-weight: 800; margin-bottom: 0.75rem; color: var(--ios-teal-dark);">
+                        <span>BP: <span id="prVBP">--</span></span>
+                        <span>Sugar: <span id="prVSugar">--</span></span>
+                        <span>Weight: <span id="prVWeight">--</span></span>
+                    </div>
+
+                    <!-- Medication List (Rx) -->
+                    <div style="min-height: 220px;">
+                        <div style="font-size: 1.6rem; font-weight: 900; color: var(--ios-teal); font-style: italic; margin-bottom: 0.5rem;">Rx</div>
+                        <div id="prRxList" style="display: flex; flex-direction: column; gap: 0.6rem;"></div>
+                    </div>
+
+                    <!-- Required Investigations -->
+                    <div id="prLabsSec" class="hidden" style="border-top: 1px dashed var(--ios-card-border); padding-top: 0.5rem; margin-top: 0.5rem; font-size: 0.75rem;">
+                        <strong>Required Labs / Imaging:</strong> <span id="prLabsContent"></span>
+                    </div>
+                </div>
+
+                <!-- Prescription Footer -->
+                <div style="border-top: 2px solid var(--ios-bg); padding-top: 0.6rem; font-size: 0.72rem; color: var(--ios-text-secondary); display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <p id="prAddress" style="font-weight: 700;">Tanta, Gharbia Governorate</p>
+                        <p id="prPhones" style="font-family: monospace; font-weight: 800; color: var(--ios-teal-dark);" dir="ltr">01064777914</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p id="prFollowUp" style="font-weight: 800; color: var(--ios-teal-dark);">Follow-Up: As Advised</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Printable Execution Area -->
+    <div id="printExecutionArea" class="hidden"></div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // State Storage & Default Settings
+        let patients = [];
+        let drugs = [];
+        let settings = {
+            docName: "Dr. Amal Magdy Clinic",
+            docSub: "Internal Medicine & Diabetes Specialist",
+            address: "Tanta, Gharbia Governorate | Daily 4:00 PM - 9:00 PM",
+            phones: "01064777914"
+        };
+
+        let currentPatientId = null;
+        let currentRxItems = [];
+        let activeWAPatient = null;
+        let activeWAVisit = null;
+        let activeQpCat = "All";
+
+        const defaultFormulary = [
+            { id: 1, name: "Janumet 50/1000 mg", category: "Diabetes & Endocrine", form: "Tablets", dose: "1 tablet twice daily", instruction: "With meals" },
+            { id: 2, name: "Concor 5 mg", category: "Cardiology & BP", form: "Tablets", dose: "1 tablet in morning", instruction: "After breakfast" },
+            { id: 3, name: "Glucophage 1000 mg", category: "Diabetes & Endocrine", form: "Tablets", dose: "1 tablet twice daily", instruction: "Mid-meal" },
+            { id: 4, name: "Nexium 40 mg", category: "GI & Colon", form: "Tablets", dose: "1 tablet daily", instruction: "30 mins before breakfast" },
+            { id: 5, name: "Crestor 10 mg", category: "Cardiology & BP", form: "Tablets", dose: "1 tablet at bedtime", instruction: "At night" },
+            { id: 6, name: "Duspatalin Retard 200 mg", category: "GI & Colon", form: "Capsules", dose: "1 capsule twice daily", instruction: "20 mins before meals" },
+            { id: 7, name: "Augmentin 1g", category: "Analgesics & Antibiotics", form: "Tablets", dose: "1 tablet every 12 hrs", instruction: "After meals for 7 days" },
+            { id: 8, name: "Lasix 40 mg", category: "Renal & Uric Acid", form: "Tablets", dose: "1 tablet in morning", instruction: "Diuretic" },
+            { id: 9, name: "Ferotron", category: "Vitamins & Hematology", form: "Capsules", dose: "1 capsule daily", instruction: "After lunch" },
+            { id: 10, name: "Panadol Joint 665 mg", category: "Analgesics & Antibiotics", form: "Tablets", dose: "1 tablet PRN", instruction: "Every 8 hours" }
+        ];
+
+        const drugCategories = [
+            "All", "GI & Colon", "Cardiology & BP", "Diabetes & Endocrine", "Respiratory", "Renal & Uric Acid", "Vitamins & Hematology", "Analgesics & Antibiotics"
+        ];
+
+        window.onload = function() {
+            setupPwaManifestAndIcon();
+            initLoadData();
+            renderPatientsList();
+            renderDrugsTable();
+            applySettingsToUI();
+            updateStats();
+
+            const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+            if (isStandalone) {
+                document.getElementById('installGuideBanner').style.display = 'none';
+            }
+
+            if (window.location.protocol === 'file:' && !isStandalone) {
+                const warnBox = document.getElementById('localFileWarningBox');
+                if (warnBox) warnBox.style.display = 'block';
+            }
+        };
+
+        function setupPwaManifestAndIcon() {
+            try {
+                const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect width="180" height="180" rx="40" fill="#0a8491"/><rect x="76" y="42" width="28" height="96" rx="8" fill="#ffffff"/><rect x="42" y="76" width="96" height="28" rx="8" fill="#ffffff"/></svg>`;
+                const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
+
+                const appleIconLink = document.getElementById('dynamicAppleIcon');
+                if (appleIconLink) appleIconLink.href = iconUrl;
+
+                const manifestObj = {
+                    name: "Dr. Amal Magdy Clinic - Internal Medicine",
+                    short_name: "Dr. Amal Clinic",
+                    start_url: window.location.href,
+                    display: "standalone",
+                    background_color: "#f2f2f7",
+                    theme_color: "#0a8491",
+                    icons: [{
+                        src: iconUrl,
+                        sizes: "180x180",
+                        type: "image/svg+xml",
+                        purpose: "any"
+                    }]
+                };
+
+                const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+                const manifestUrl = URL.createObjectURL(manifestBlob);
+                const manifestLink = document.getElementById('dynamicManifestLink');
+                if (manifestLink) manifestLink.href = manifestUrl;
+            } catch (err) {
+                console.warn('PWA manifest setup skipped:', err);
+            }
+        }
+
+        function showToast(text) {
+            const stack = document.getElementById('toastStack');
+            const toast = document.createElement('div');
+            toast.className = 'ios-toast';
+            toast.innerHTML = `<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <span>${text}</span>`;
+            stack.appendChild(toast);
+            setTimeout(() => toast.remove(), 2800);
+        }
+
+        function openInstallInstructions() { document.getElementById('installInstructionsModal').classList.remove('hidden'); }
+        function closeInstallInstructions() { document.getElementById('installInstructionsModal').classList.add('hidden'); }
+
+        function initLoadData() {
+            const p = localStorage.getItem('dr_amal_ios_patients');
+            const d = localStorage.getItem('dr_amal_ios_drugs');
+            const s = localStorage.getItem('dr_amal_ios_settings');
+
+            if (p) patients = JSON.parse(p);
+            else {
+                patients = [{
+                    id: "PAT-101",
+                    name: "Ahmed Mahmoud Ali",
+                    age: 54,
+                    gender: "Male",
+                    phone: "01064777914",
+                    blood: "O+",
+                    createdDate: "2026-11-23",
+                    history: { diseases: ["Diabetes Mellitus", "Hypertension"], allergies: "Penicillin allergy", surgeries: "Cholecystectomy 2020", notes: "Regular HbA1c follow-up" },
+                    visits: []
+                }];
+                savePatients();
+            }
+
+            if (d) drugs = JSON.parse(d);
+            else { drugs = defaultFormulary; saveDrugs(); }
+
+            if (s) settings = JSON.parse(s);
+        }
+
+        function savePatients() { localStorage.setItem('dr_amal_ios_patients', JSON.stringify(patients)); updateStats(); }
+        function saveDrugs() { localStorage.setItem('dr_amal_ios_drugs', JSON.stringify(drugs)); updateStats(); }
+        function saveSettings() { localStorage.setItem('dr_amal_ios_settings', JSON.stringify(settings)); applySettingsToUI(); }
+
+        function applySettingsToUI() {
+            document.getElementById('headDocName').innerText = settings.docName || "Dr. Amal Magdy Clinic";
+            document.getElementById('setDocName').value = settings.docName || "Dr. Amal Magdy Clinic";
+            document.getElementById('setDocSub').value = settings.docSub || "Internal Medicine & Diabetes Specialist";
+            document.getElementById('setPhones').value = settings.phones || "01064777914";
+            document.getElementById('setAddress').value = settings.address || "Tanta, Gharbia Governorate";
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-link, .tab-item').forEach(el => el.classList.remove('active'));
+
+            const dTab = document.getElementById(`dTab-${tabId}`);
+            if (dTab) dTab.classList.add('active');
+            const mTab = document.getElementById(`mTab-${tabId}`);
+            if (mTab) mTab.classList.add('active');
+
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+        }
+
+        function updateStats() {
+            document.getElementById('stTotalPatients').innerText = patients.length;
+            document.getElementById('stTotalDrugs').innerText = drugs.length;
+            let rxCount = 0;
+            patients.forEach(p => { if (p.visits) rxCount += p.visits.length; });
+            document.getElementById('stTotalRx').innerText = rxCount;
+        }
+
+        function renderPatientsList() {
+            const filter = (document.getElementById('patientSearchInput').value || '').trim().toLowerCase();
+            const tbody = document.getElementById('patientsTBody');
+            tbody.innerHTML = '';
+
+            const filtered = patients.filter(p => p.name.toLowerCase().includes(filter) || (p.phone && p.phone.includes(filter)));
+
+            if (filtered.length === 0) {
+                document.getElementById('emptyPatientsMsg').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('emptyPatientsMsg').style.display = 'none';
+            }
+
+            filtered.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.onclick = (e) => { if (!e.target.closest('button')) openPatientProfile(p.id); };
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--ios-teal); font-family: monospace;">${p.id}</td>
+                    <td style="font-weight: 800; color: var(--ios-text-primary);">${p.name}</td>
+                    <td>${p.age} yrs / ${p.gender}</td>
+                    <td dir="ltr" style="font-family: monospace;">${p.phone || '--'}</td>
+                    <td><span class="badge" style="background: var(--ios-teal-light); color: var(--ios-teal-dark);">${(p.history && p.history.diseases && p.history.diseases.length > 0) ? p.history.diseases.join(', ') : 'None'}</span></td>
+                    <td style="font-size: 0.78rem;">${p.visits && p.visits.length > 0 ? p.visits[p.visits.length-1].date : 'No visits'}</td>
+                    <td style="text-align: center;">
+                        <button onclick="openPatientProfile('${p.id}')" class="btn btn-secondary" style="font-size: 0.72rem; padding: 0.3rem 0.6rem;">Open Chart</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openPatientProfile(id) {
+            currentPatientId = id;
+            const p = patients.find(x => x.id === id);
+            if (!p) return;
+
+            document.getElementById('pfName').innerText = p.name;
+            document.getElementById('pfAge').innerText = p.age;
+            document.getElementById('pfGenderBadge').innerText = p.gender;
+            document.getElementById('pfBloodBadge').innerText = p.blood || 'O+';
+            document.getElementById('pfPhone').innerText = p.phone || '01064777914';
+            document.getElementById('pfCode').innerText = p.id;
+
+            renderHistoryView(p);
+            renderPastVisits(p);
+            closeNewVisitForm();
+            switchTab('patient-profile');
+        }
+
+        function renderHistoryView(p) {
+            const h = p.history || {};
+            const chips = document.getElementById('pfChronicChips');
+            chips.innerHTML = '';
+            if (h.diseases && h.diseases.length > 0) {
+                h.diseases.forEach(d => {
+                    chips.innerHTML += `<span class="badge" style="background: var(--ios-bg); border: 1px solid var(--ios-card-border); color: var(--ios-text-primary); margin: 2px;">${d}</span>`;
+                });
+            } else chips.innerHTML = '<span style="color: var(--ios-text-tertiary);">No chronic conditions recorded</span>';
+
+            document.getElementById('pfAllergies').innerText = h.allergies || 'No known allergies';
+            document.getElementById('pfSurgeries').innerText = h.surgeries || 'None';
+            document.getElementById('pfNotes').innerText = h.notes || 'None';
+        }
+
+        function toggleHistoryEdit() {
+            const v = document.getElementById('histViewMode');
+            const e = document.getElementById('histEditMode');
+            if (e.classList.contains('hidden')) {
+                v.classList.add('hidden');
+                e.classList.remove('hidden');
+            } else {
+                v.classList.remove('hidden');
+                e.classList.add('hidden');
+            }
+        }
+
+        function saveMedicalHistory() {
+            const p = patients.find(x => x.id === currentPatientId);
+            if (!p) return;
+
+            const selected = [];
+            document.querySelectorAll('.disease-cb:checked').forEach(cb => selected.push(cb.value));
+
+            p.history = {
+                diseases: selected,
+                allergies: document.getElementById('inAllergies').value.trim(),
+                surgeries: document.getElementById('inSurgeries').value.trim(),
+                notes: document.getElementById('inNotes').value.trim()
+            };
+            savePatients();
+            renderHistoryView(p);
+            toggleHistoryEdit();
+            showToast('Medical history saved');
+        }
+
+        function startNewVisitForm() {
+            document.getElementById('newVisitFormCard').classList.remove('hidden');
+            document.getElementById('visitFormDate').innerText = 'Date: ' + new Date().toISOString().split('T')[0];
+            currentRxItems = [];
+            renderRxTable();
+        }
+
+        function closeNewVisitForm() { document.getElementById('newVisitFormCard').classList.add('hidden'); }
+
+        function toggleQuickLab(name) {
+            const input = document.getElementById('vLabs');
+            let list = input.value ? input.value.split(',').map(s => s.trim()).filter(Boolean) : [];
+            if (list.includes(name)) list = list.filter(x => x !== name);
+            else list.push(name);
+            input.value = list.join(', ');
+        }
+
+        function addDrugToRx() {
+            const name = document.getElementById('inRxDrugName').value.trim();
+            const form = document.getElementById('inRxDrugForm').value;
+            const dose = document.getElementById('inRxDrugDose').value.trim();
+            const instruction = document.getElementById('inRxDrugInstruction').value.trim();
+
+            if (!name) { showToast('Please enter drug name'); return; }
+            currentRxItems.push({ name, form, dose, instruction });
+            document.getElementById('inRxDrugName').value = '';
+            document.getElementById('inRxDrugDose').value = '';
+            document.getElementById('inRxDrugInstruction').value = '';
+            renderRxTable();
+        }
+
+        function removeRxItem(idx) { currentRxItems.splice(idx, 1); renderRxTable(); }
+
+        function renderRxTable() {
+            const tbody = document.getElementById('currentRxTBody');
+            tbody.innerHTML = '';
+            if (currentRxItems.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--ios-text-tertiary);">No medications added yet.</td></tr>';
+                return;
+            }
+            currentRxItems.forEach((item, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 800;">${item.name} <span style="font-size: 0.75rem; color: var(--ios-text-secondary);">(${item.form})</span></td>
+                        <td style="font-weight: 800; color: var(--ios-teal-dark);">${item.dose || '--'}</td>
+                        <td style="color: var(--ios-text-secondary);">${item.instruction || '--'}</td>
+                        <td style="text-align: center;"><button onclick="removeRxItem(${idx})" style="color: var(--ios-red); background: none; border: none; cursor: pointer;">✕</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function saveAndPreviewVisit() {
+            const p = patients.find(x => x.id === currentPatientId);
+            if (!p) return;
+
+            const visit = {
+                id: 'VIS-' + Date.now().toString().slice(-4),
+                date: new Date().toISOString().split('T')[0],
+                vitals: {
+                    bp: document.getElementById('vBP').value.trim(),
+                    pulse: document.getElementById('vPulse').value.trim(),
+                    sugar: document.getElementById('vSugar').value.trim(),
+                    temp: document.getElementById('vTemp').value.trim(),
+                    weight: document.getElementById('vWeight').value.trim()
+                },
+                complaint: document.getElementById('vComplaint').value.trim(),
+                diagnosis: document.getElementById('vDiagnosis').value.trim(),
+                labs: document.getElementById('vLabs').value.trim(),
+                advice: document.getElementById('vAdvice').value.trim(),
+                followUp: document.getElementById('vFollowUp').value.trim(),
+                rx: [...currentRxItems]
+            };
+
+            if (!p.visits) p.visits = [];
+            p.visits.push(visit);
+            savePatients();
+            renderPastVisits(p);
+            closeNewVisitForm();
+            showToast('Visit saved successfully');
+            previewRxSheet(p, visit);
+        }
+
+        function renderPastVisits(p) {
+            const container = document.getElementById('pastVisitsContainer');
+            container.innerHTML = '';
+            const visits = p.visits || [];
+            document.getElementById('visitCountBadge').innerText = visits.length + ' Visits';
+
+            [...visits].reverse().forEach(v => {
+                let rxHTML = '';
+                if (v.rx && v.rx.length > 0) {
+                    v.rx.forEach(item => { rxHTML += `<div style="font-size: 0.78rem; font-weight: 800;">• ${item.name} - ${item.dose}</div>`; });
+                } else rxHTML = '<div style="font-size: 0.75rem; color: var(--ios-text-tertiary);">No Rx medications</div>';
+
+                container.innerHTML += `
+                    <div style="background: var(--ios-bg); padding: 0.85rem; border-radius: var(--radius-ios-md); border: 1px solid var(--ios-card-border);">
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--ios-card-border); padding-bottom: 0.4rem; margin-bottom: 0.4rem;">
+                            <strong style="font-size: 0.85rem;">Visit Date: ${v.date}</strong>
+                            <div style="display: flex; gap: 0.3rem;">
+                                <button onclick='sendWhatsAppRx("${p.id}", "${v.id}")' class="btn btn-green" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; min-height: 32px;">WhatsApp</button>
+                                <button onclick='reprintRx("${p.id}", "${v.id}")' class="btn btn-teal" style="font-size: 0.68rem; padding: 0.2rem 0.5rem; min-height: 32px;">Print Rx</button>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.78rem; margin-bottom: 0.35rem;">Diagnosis: <strong>${v.diagnosis || 'N/A'}</strong></div>
+                        <div style="background: white; padding: 0.5rem; border-radius: var(--radius-ios-sm); border: 1px solid var(--ios-card-border);">${rxHTML}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function reprintRx(pId, vId) {
+            const p = patients.find(x => x.id === pId);
+            const v = p ? p.visits.find(x => x.id === vId) : null;
+            if (p && v) previewRxSheet(p, v);
+        }
+
+        function previewRxSheet(p, v) {
+            activeWAPatient = p; activeWAVisit = v;
+
+            document.getElementById('prDocName').innerText = settings.docName;
+            document.getElementById('prDocSub').innerText = settings.docSub;
+            document.getElementById('prAddress').innerText = settings.address;
+            document.getElementById('prPhones').innerText = settings.phones;
+
+            document.getElementById('prDate').innerText = v.date;
+            document.getElementById('prPatName').innerText = p.name;
+            document.getElementById('prPatAge').innerText = p.age;
+            document.getElementById('prPatGender').innerText = p.gender;
+
+            document.getElementById('prVBP').innerText = (v.vitals && v.vitals.bp) ? v.vitals.bp : '--';
+            document.getElementById('prVSugar').innerText = (v.vitals && v.vitals.sugar) ? v.vitals.sugar : '--';
+            document.getElementById('prVWeight').innerText = (v.vitals && v.vitals.weight) ? v.vitals.weight : '--';
+
+            const rxList = document.getElementById('prRxList');
+            rxList.innerHTML = '';
+            if (v.rx && v.rx.length > 0) {
+                v.rx.forEach(item => {
+                    rxList.innerHTML += `
+                        <div style="border-bottom: 1px solid #f0f0f0; padding-bottom: 0.35rem;">
+                            <div style="font-weight: 800; font-size: 0.88rem;">${item.name}</div>
+                            <div style="font-size: 0.78rem; color: var(--ios-teal-dark); font-weight: 800; margin-left: 0.75rem;">► ${item.dose} ${item.instruction ? '(' + item.instruction + ')' : ''}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            const labsSec = document.getElementById('prLabsSec');
+            if (v.labs) {
+                document.getElementById('prLabsContent').innerText = v.labs;
+                labsSec.classList.remove('hidden');
+            } else labsSec.classList.add('hidden');
+
+            document.getElementById('prFollowUp').innerText = v.followUp ? 'Follow-Up: ' + v.followUp : 'Wish you speedy recovery';
+            document.getElementById('printPreviewModal').classList.remove('hidden');
+        }
+
+        function executePrint() {
+            const content = document.getElementById('prescriptionPaper').innerHTML;
+            document.getElementById('printExecutionArea').innerHTML = content;
+            window.print();
+        }
+
+        function closePrintPreview() { document.getElementById('printPreviewModal').classList.add('hidden'); }
+
+        // Quick Pick Modal
+        function openQuickPickModal() {
+            renderQuickPickCategoryChips();
+            renderQuickPickGrid();
+            document.getElementById('quickPickModal').classList.remove('hidden');
+        }
+
+        function closeQuickPickModal() { document.getElementById('quickPickModal').classList.add('hidden'); }
+
+        function renderQuickPickCategoryChips() {
+            const container = document.getElementById('qpCategoryChips');
+            container.innerHTML = '';
+            drugCategories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `chip-btn ${activeQpCat === cat ? 'active' : ''}`;
+                btn.innerText = cat;
+                btn.onclick = () => { activeQpCat = cat; renderQuickPickCategoryChips(); renderQuickPickGrid(); };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderQuickPickGrid() {
+            const filter = (document.getElementById('qpSearch').value || '').trim().toLowerCase();
+            const grid = document.getElementById('qpDrugsGrid');
+            grid.innerHTML = '';
+
+            const filtered = drugs.filter(d => {
+                const matchCat = activeQpCat === 'All' || d.category === activeQpCat;
+                const matchSearch = d.name.toLowerCase().includes(filter);
+                return matchCat && matchSearch;
+            });
+
+            document.getElementById('qpCountLbl').innerText = `Available: ${filtered.length} medications`;
+
+            filtered.forEach(d => {
+                const card = document.createElement('div');
+                card.style.cssText = 'background: white; border: 1px solid var(--ios-card-border); padding: 0.65rem; border-radius: var(--radius-ios-sm); cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 0.4rem;';
+                card.onclick = () => addDrugDirectly(d);
+                card.innerHTML = `
+                    <div>
+                        <div style="font-weight: 800; font-size: 0.82rem; color: var(--ios-text-primary);">${d.name}</div>
+                        <div style="font-size: 0.68rem; color: var(--ios-teal); font-weight: 800;">${d.category || 'General'}</div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: var(--ios-text-secondary); background: var(--ios-bg); padding: 0.3rem; border-radius: 4px;">${d.dose || '1 tab twice daily'}</div>
+                    <button class="btn btn-teal" style="font-size: 0.68rem; padding: 0.25rem; min-height: 32px;">+ Add to Rx</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function addDrugDirectly(drug) {
+            currentRxItems.push({ name: drug.name, form: drug.form || 'Tablets', dose: drug.dose || '1 tablet twice daily', instruction: drug.instruction || 'After meals' });
+            renderRxTable();
+            showToast(`Added [${drug.name}]`);
+        }
+
+        function renderDrugsTable() {
+            const filter = (document.getElementById('drugManageSearch').value || '').trim().toLowerCase();
+            const tbody = document.getElementById('drugsTBody');
+            tbody.innerHTML = '';
+
+            const filtered = drugs.filter(d => d.name.toLowerCase().includes(filter));
+            filtered.forEach(d => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 800;">${d.name}</td>
+                        <td><span class="badge" style="background: var(--ios-teal-light); color: var(--ios-teal-dark);">${d.category || 'General'}</span></td>
+                        <td>${d.form || '--'}</td>
+                        <td style="font-weight: 800; color: var(--ios-teal-dark);">${d.dose || '--'}</td>
+                        <td>${d.instruction || '--'}</td>
+                        <td style="text-align: center;"><button onclick="deleteDrug(${d.id})" style="color: var(--ios-red); background: none; border: none; cursor: pointer;">✕</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddDrugModal() { document.getElementById('addDrugModal').classList.remove('hidden'); }
+        function closeAddDrugModal() { document.getElementById('addDrugModal').classList.add('hidden'); }
+
+        function handleAddDrugSubmit(e) {
+            e.preventDefault();
+            drugs.push({
+                id: Date.now(),
+                name: document.getElementById('mDrugName').value.trim(),
+                category: document.getElementById('mDrugCategory').value,
+                form: document.getElementById('mDrugForm').value,
+                dose: document.getElementById('mDrugDose').value.trim(),
+                instruction: document.getElementById('mDrugInst').value.trim()
+            });
+            saveDrugs();
+            renderDrugsTable();
+            closeAddDrugModal();
+            showToast('Drug added to formulary');
+        }
+
+        function deleteDrug(id) {
+            drugs = drugs.filter(x => x.id !== id);
+            saveDrugs();
+            renderDrugsTable();
+            showToast('Drug deleted');
+        }
+
+        // WhatsApp Features
+        function sendWhatsAppRx(pId, vId) {
+            const p = patients.find(x => x.id === pId);
+            const v = p ? p.visits.find(x => x.id === vId) : null;
+            if (p && v) launchWaModal(p, v);
+        }
+
+        function shareWhatsAppFromPrint() {
+            if (activeWAPatient && activeWAVisit) launchWaModal(activeWAPatient, activeWAVisit);
+        }
+
+        function launchWaModal(p, v) {
+            let phone = p.phone || '01064777914';
+            document.getElementById('waPhoneInput').value = phone;
+
+            let msg = `*${settings.docName}*\n`;
+            msg += `Date: ${v.date}\n`;
+            msg += `Patient: ${p.name}\n`;
+            if (v.diagnosis) msg += `Diagnosis: ${v.diagnosis}\n`;
+            msg += `\n*Prescription (Rx):*\n`;
+            if (v.rx && v.rx.length > 0) {
+                v.rx.forEach((item, i) => { msg += `${i+1}. ${item.name} - ${item.dose} (${item.instruction || ''})\n`; });
+            }
+            if (v.labs) msg += `\n*Required Labs:* ${v.labs}\n`;
+            if (v.followUp) msg += `*Follow-Up:* ${v.followUp}\n`;
+            msg += `\nClinic Phone: ${settings.phones}`;
+
+            document.getElementById('waPreviewText').value = msg;
+            document.getElementById('waModal').classList.remove('hidden');
+        }
+
+        function closeWaModal() { document.getElementById('waModal').classList.add('hidden'); }
+
+        function launchWhatsAppNow() {
+            let phone = document.getElementById('waPhoneInput').value.trim().replace(/\s+/g, '');
+            if (phone.startsWith('01')) phone = '2' + phone;
+            const msg = encodeURIComponent(document.getElementById('waPreviewText').value);
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+            closeWaModal();
+        }
+
+        function saveSettingsForm() {
+            settings.docName = document.getElementById('setDocName').value.trim();
+            settings.docSub = document.getElementById('setDocSub').value.trim();
+            settings.phones = document.getElementById('setPhones').value.trim() || '01064777914';
+            settings.address = document.getElementById('setAddress').value.trim();
+            saveSettings();
+            showToast('Settings saved');
+        }
+
+        // Backup System (JSON)
+        function exportDataBackup() {
+            const data = { clinic: settings, patients: patients, drugs: drugs, date: new Date().toISOString() };
+            const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+            const a = document.createElement('a');
+            a.href = str;
+            a.download = `DrAmal_iOS_Clinic_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            a.remove();
+            showToast('JSON backup exported');
+        }
+
+        function importDataBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.patients) { patients = parsed.patients; savePatients(); }
+                    if (parsed.drugs) { drugs = parsed.drugs; saveDrugs(); }
+                    if (parsed.clinic) { settings = parsed.clinic; saveSettings(); }
+                    renderPatientsList();
+                    renderDrugsTable();
+                    showToast('Backup imported successfully');
+                } catch (err) { showToast('Invalid JSON file format'); }
+            };
+            reader.readAsText(file);
+        }
+
+        // Patient Modal Form Handles
+        function openPatientModal() {
+            document.getElementById('mPatId').value = '';
+            document.getElementById('mPatName').value = '';
+            document.getElementById('mPatAge').value = '';
+            document.getElementById('mPatPhone').value = '';
+            document.getElementById('mPatNote').value = '';
+            document.getElementById('patientModalTitle').innerText = 'Register New Patient';
+            document.getElementById('patientModal').classList.remove('hidden');
+        }
+
+        function openEditPatientModal() {
+            const p = patients.find(x => x.id === currentPatientId);
+            if (!p) return;
+            document.getElementById('mPatId').value = p.id;
+            document.getElementById('mPatName').value = p.name;
+            document.getElementById('mPatAge').value = p.age;
+            document.getElementById('mPatGender').value = p.gender;
+            document.getElementById('mPatPhone').value = p.phone || '01064777914';
+            document.getElementById('mPatBlood').value = p.blood || 'O+';
+            document.getElementById('mPatNote').value = p.note || '';
+            document.getElementById('patientModalTitle').innerText = 'Edit Patient Record';
+            document.getElementById('patientModal').classList.remove('hidden');
+        }
+
+        function closePatientModal() { document.getElementById('patientModal').classList.add('hidden'); }
+
+        function handlePatientFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('mPatId').value;
+            const name = document.getElementById('mPatName').value.trim();
+            const age = document.getElementById('mPatAge').value;
+            const gender = document.getElementById('mPatGender').value;
+            const phone = document.getElementById('mPatPhone').value.trim();
+            const blood = document.getElementById('mPatBlood').value;
+            const note = document.getElementById('mPatNote').value.trim();
+
+            if (id) {
+                const p = patients.find(x => x.id === id);
+                if (p) { p.name = name; p.age = age; p.gender = gender; p.phone = phone; p.blood = blood; p.note = note; }
+                showToast('Patient record updated');
+            } else {
+                const newId = 'PAT-' + (100 + patients.length + 1);
+                patients.push({ id: newId, name, age, gender, phone, blood, note, createdDate: new Date().toISOString().split('T')[0], history: {}, visits: [] });
+                showToast('New patient registered');
+            }
+
+            savePatients();
+            renderPatientsList();
+            closePatientModal();
+        }
+    </script>
+</body>
+</html>
